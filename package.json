@@ -1,0 +1,13 @@
+{
+  "name": "ng-vending-machine",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Dannzzor/ng-vending-machine.git",
+  "author": "Danny Davenport <ddavenport420@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.6.6",
+    "angular-resource": "^1.6.6",
+    "angular-route": "^1.6.6"
+  }
+}
