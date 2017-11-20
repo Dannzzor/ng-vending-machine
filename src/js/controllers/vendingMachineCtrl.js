@@ -1,11 +1,28 @@
-angular.module(MODULE_NAME)
-.controller(CONTROLLER_NAME, function VendingMachineCtrl($scope, $filter) {
+var angular = require('angular');
+
+angular.module('vendingMachine')
+.controller('VendingMachineCtrl', function VendingMachineCtrl($scope, $filter) {
   'use strict';
 
   $scope.inventory = {
-    cola: ['cola', 'cherry cola', 'diet cola', 'flat cola', 'root beer', 'liter cola'],
-    candy: ['snickers', 'snickers', 'snickers', 'snickers', 'snickers', 'snickers', 'snickers'],
-    chips: ['potato chips', 'fiery cheetoes']
+    cola: [
+      {type: 'cola', name: 'Cola', id: 1},
+      {type: 'cola', name: 'Cola', id: 2},
+      {type: 'cola', name: 'Cola', id: 3},
+      {type: 'cola', name: 'Cola', id: 4},
+    ],
+    candy: [
+      {type: 'candy', name: 'Candy', id: 1},
+      {type: 'candy', name: 'Candy', id: 2},
+      {type: 'candy', name: 'Candy', id: 3},
+      {type: 'candy', name: 'Candy', id: 4}
+    ],
+    chips: [
+      {type: 'chips', name: 'Chips', id: 1},
+      {type: 'chips', name: 'Chips', id: 2},
+      {type: 'chips', name: 'Chips', id: 3},
+      {type: 'chips', name: 'Chips', id: 4}
+    ]
   };
   $scope.credit = 0;
   $scope.coinReturn = [];
@@ -17,21 +34,22 @@ angular.module(MODULE_NAME)
   };
   $scope.coinInventory = {
     quarters: [
-      { size: 24.26, weight: 5.670, value: 0.25, name: 'quarter'},
-      { size: 24.26, weight: 5.670, value: 0.25, name: 'quarter'},
-      { size: 24.26, weight: 5.670, value: 0.25, name: 'quarter'}
+      // { size: 24.26, weight: 5.670, name: '25'},
+      // { size: 24.26, weight: 5.670, name: '25'},
+      // { size: 24.26, weight: 5.670, name: '25'}
     ],
     nickels: [
-      { size: 21.21, weight: 5.000, value: 0.05, name: 'nickel' },
-      { size: 21.21, weight: 5.000, value: 0.05, name: 'nickel' }
+      { size: 21.21, weight: 5.000, name: '5' },
+      // { size: 21.21, weight: 5.000, name: '5' }
     ],
     dimes: [
-      { size: 17.91, weight: 2.268, value: 0.10, name: 'dime' },
-      { size: 17.91, weight: 2.268, value: 0.10, name: 'dime' }
+      // { size: 17.91, weight: 2.268, name: '10' },
+      { size: 17.91, weight: 2.268, name: '10' }
     ]
 
   };
   $scope.display = 'INSERT COIN';
+  $scope.lastCheck = '';
 
   // replicating vending machine coin determination:
   // 1. filters coins by size, smallest to largest
@@ -75,6 +93,7 @@ angular.module(MODULE_NAME)
     } else {
       $scope.coinReturn.push(coin);
     }
+    $scope.lastCheck = '';
     $scope.checkDisplay();
   };
 
@@ -116,8 +135,9 @@ angular.module(MODULE_NAME)
       }
     } else {
       // tell user to add more money / or just the price
-      if($scope.credit > 0) {
-        $scope.checkDisplay('PRICE ' + itemCost - $scope.credit);
+      if($scope.lastCheck !== itemType) {
+        $scope.checkDisplay('PRICE ' + formatMoney(itemCost));
+        $scope.lastCheck = itemType;
       } else {
         $scope.checkDisplay();
       }
@@ -126,10 +146,9 @@ angular.module(MODULE_NAME)
   };
 
   $scope.checkDisplay = function(msg) {
-    $scope.display = msg ||
-                     ($scope.credit > 0 ?
-                      $scope.credit :
-                      ($scope.haveChange() ? 'INSERT COIN' : 'EXACT CHANGE ONLY'));
+    $scope.display = msg || ($scope.credit > 0 ?
+      $scope.credit :
+      ($scope.haveChange() ? 'INSERT COIN' : 'EXACT CHANGE ONLY'));
   };
 
   $scope.refund = function() {
@@ -141,6 +160,8 @@ angular.module(MODULE_NAME)
     $scope.insertedCoins.quarters = [];
     $scope.insertedCoins.nickels = [];
     $scope.insertedCoins.dimes = [];
+
+    $scope.credit = 0;
 
     $scope.checkDisplay();
   };
@@ -157,8 +178,10 @@ angular.module(MODULE_NAME)
       $scope.credit -= $scope.coinData.nickel.value;
     }
 
-    if($scope.credit > 0 && $scope.haveSufficientCoinage($scope.credit)) {
+    if($scope.credit > 0 && $scope.haveSufficientCoinage($scope.credit) && $scope.haveChange()) {
       $scope.payout();
+    } else {
+      $scope.credit = 0;
     }
   };
 
@@ -197,4 +220,17 @@ angular.module(MODULE_NAME)
 
   $scope.checkDisplay();
 
+
+  // quick money number format -- doesn't handle thousands, but neither should our vending machine.
+  function formatMoney(num) {
+    num = '' + num;
+    switch (num.length) {
+      case 1:
+        return '$0.0' + num;
+      case 2:
+        return '$0.' + num;
+      default:
+        return '$' + num.substr(0, num.length -2) + '.' + num.substr(-2);
+    }
+  }
 });

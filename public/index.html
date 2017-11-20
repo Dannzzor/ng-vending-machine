@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-framework="angularjs" ng-app="vendingMachine">
+	<head>
+		<meta charset="utf-8">
+		<title>Vending Machine</title>
+		<link rel="stylesheet" href="css/styles.css">
+	</head>
+	<body ng-controller="VendingMachineCtrl">
+    <div class="container">
+
+      <div class="vending-machine">
+        <header>
+          <h1>Vending Machine</h1>
+        </header>
+        <div class="main">
+          <section class="item-inventory">
+            <div class="cola-column">
+              <div ng-repeat="cola in inventory.cola" class="item cola">Cola</div>
+            </div>
+            <div class="chip-column">
+              <div ng-repeat="chips in inventory.chips" class="item chips">Chips</div>
+            </div>
+            <div class="candy-column">
+              <div ng-repeat="candy in inventory.candy" class="item candy">Candy</div>
+            </div>
+          </section>
+          <asside class="controls">
+            <div class="display clickable" ng-click="checkDisplay()">
+              <span>{{display | displayFilter}}</span>
+            </div>
+            <div class="coin-slot"></div>
+            <div class="refund">
+              <button ng-click="refund()">Refund</button>
+            </div>
+            <div class="keypad">
+              <ul>
+                <li><button ng-click="selectItem('cola')">Cola</button></li>
+                <li><button ng-click="selectItem('chips')">Chips</button></li>
+                <li><button ng-click="selectItem('candy')">Candy</button></li>
+              </ul>
+            </div>
+            <div ng-click="takeChange()" class="coin-return clickable">
+              <div ng-repeat="coin in coinReturn" class="coin">{{coin.name}}</div>
+            </div>
+          </asside>
+        </div>
+        <footer>
+          <div ng-click="takeItem()" class="vend-slot clickable">
+            <div ng-repeat="item in vendSlot" ng-class="item.type" class="item">{{item.name}}</div>
+          </div>
+        </footer>
+      </div>
+
+      <div class="data">
+        <h3>Click to insert coins</h3>
+        <div ng-click="addCredits({size: 21.21, weight: 5.000, name: '5'})" class="coin large clickable" alt="Insert a Nickel">5</div>
+        <div ng-click="addCredits({size: 17.91, weight: 2.268, name: '10'})" class="coin large clickable" alt="Insert a Dime">10</div>
+        <div ng-click="addCredits({size: 24.26, weight: 5.670, name: '25'})" class="coin large clickable" alt="Insert a Quarter">25</div>
+        <div ng-click="addCredits({size: 19, weight: 3, name: '??'})" class="coin large clickable" alt="Insert a sketchy coin">??</div>
+
+        <h3>Insert a custom coin</h3>
+        <label for="custom-weight">Weight (g):
+          <input name="custom-weight" type="text" ng-model="customWeight">
+        </label>
+        <br />
+        <label for="custom-size">Size (mm):
+          <input name="custom-size" type="text" ng-model="customSize">
+        </label>
+        <br />
+        <button ng-click="addCredits({size: customSize, weight: customWeight, name: '??'})">Insert custom coin</button>
+        <p>hint:</p>
+        <p>Nickel: {size: 21.21, weight: 5.000}</p>
+        <p>Dime: {size: 17.91, weight: 2.268}</p>
+        <p>Quarter: {size: 24.26, weight: 5.670}</p>
+
+        <div class="inserted-coins">
+          <h4>Inserted coins</h4>
+          <div ng-repeat="nickel in insertedCoins.nickels" class="coin">5</div>
+          <div ng-repeat="dime in insertedCoins.dimes" class="coin">10</div>
+          <div ng-repeat="quarter in insertedCoins.quarters" class="coin">25</div>
+        </div>
+
+        <div class="coin-inventory">
+          <h4>Machine coin inventory</h4>
+          <div ng-repeat="nickel in coinInventory.nickels" class="coin">5</div>
+          <div ng-repeat="dime in coinInventory.dimes" class="coin">10</div>
+          <div ng-repeat="quarter in coinInventory.quarters" class="coin">25</div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+		<script src="js/app.js"></script>
+	</body>
+</html>

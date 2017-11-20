@@ -2,12 +2,16 @@
   "name": "ng-vending-machine",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "browserify src/js/app.js -o public/js/app.js"
+  },
   "repository": "git@github.com:Dannzzor/ng-vending-machine.git",
-  "author": "Danny Davenport <ddavenport420@gmail.com>",
+  "author": "Danny Davenport <ddavenport523@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "angular": "^1.6.6",
-    "angular-resource": "^1.6.6",
-    "angular-route": "^1.6.6"
+    "browserify": "^14.5.0",
+    "express": "^4.16.2"
   }
 }
